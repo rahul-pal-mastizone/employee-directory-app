@@ -3,7 +3,6 @@ const { typeDefs } = require('./schema');
 const { resolvers } = require('./resolvers');
 const { connectToDB } = require('./db');
 
-// Use Render's required port
 const PORT = process.env.PORT || 4000;
 
 connectToDB().then(() => {
@@ -16,7 +15,7 @@ connectToDB().then(() => {
     },
   });
 
-  server.listen({ port: PORT, path: '/graphql' }).then(({ url }) => {
+  server.listen({ port: PORT, host: '0.0.0.0', path: '/graphql' }).then(({ url }) => {
     console.log(`🚀 Server ready at ${url}`);
   });
 });
