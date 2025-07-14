@@ -16,7 +16,7 @@ connectToDB().then(() => {
     },
   });
 
-  server.listen({ port: PORT }).then(({ url }) => {
+  server.listen({ port: PORT, path: '/graphql' }).then(({ url }) => {
     console.log(`🚀 Server ready at ${url}`);
   });
 });
