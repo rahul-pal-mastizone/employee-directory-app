@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Employee Directory App
 
-## Getting Started
+A full-stack MERN application built as part of the SPACEAI Senior MERN Stack Developer assignment. It enables users to manage employee records with department-based filtering, detailed views, and seamless form-based additions.
 
-First, run the development server:
+---
+
+## 🔗 Live Demo
+
+- **Frontend (Next.js + Vercel):** [https://employeee-directory-app.vercel.app](https://employeee-directory-app.vercel.app)
+- **Backend (GraphQL + Render):** [https://employee-directory-app-nouq.onrender.com/graphql](https://employee-directory-app-nouq.onrender.com/graphql)
+- **GitHub Repository:** [https://github.com/rahul-pal-mastizone/employee-directory-app](https://github.com/rahul-pal-mastizone/employee-directory-app)
+
+---
+
+## 🧰 Tech Stack
+
+| Layer     | Technology                          |
+|-----------|--------------------------------------|
+| Frontend  | Next.js (App Router), Apollo Client, Tailwind CSS |
+| Backend   | Node.js, Apollo Server 4, GraphQL    |
+| Database  | MongoDB (Native Driver)              |
+| Deployments | Vercel (Frontend), Render (Backend) |
+
+---
+
+## 📦 Features
+
+### 🖥️ Frontend (Next.js)
+
+- ✅ List all employees (name + position)
+- ✅ Filter employees by department
+- ✅ Dynamic detail pages (`/employee/[id]`)
+- ✅ Add new employee form with validation
+- ✅ Client-side routing and Apollo integration
+- ✅ Auto-refresh on submission
+- ✅ Fully responsive with Tailwind CSS
+
+### 🔧 Backend (Apollo Server)
+
+- ✅ GraphQL API with Queries and Mutations
+- ✅ MongoDB connection (Native Driver)
+- ✅ Seeded with sample data (5 employees, 3 departments)
+- ✅ Error handling for invalid operations
+
+---
+
+## 🧪 GraphQL Schema
+
+```graphql
+type Employee {
+  id: ID!
+  name: String!
+  position: String!
+  department: String!
+  salary: Int!
+}
+
+type Department {
+  id: ID!
+  name: String!
+  floor: Int!
+}
+
+type Query {
+  getAllEmployees: [Employee!]!
+  getEmployeeDetails(id: ID!): Employee
+  getEmployeesByDepartment(department: String!): [Employee!]!
+}
+
+type Mutation {
+  addEmployee(name: String!, position: String!, department: String!, salary: Int!): Employee
+}
+
+---
+
+## ⚙️ Running Locally
+
+### 🔙 Backend Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+cd employee-directory-backend
+npm install
+cp .env.example .env   # Add your MONGODB_URI here
+node seed.js           # Seed the database with initial employees & departments
+npm start              # Start Apollo Server
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+cd employee-directory-frontend
+npm install
+npm run dev            # Start the Next.js frontend (http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 👨‍💻 Author
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Rahul Pal**  
+📧 [rahul.pal.@gmail.com](mailto:rahulpal.moderntechno@gmail.com)  
+🔗 [LinkedIn](https://www.linkedin.com/in/rahul155/)
