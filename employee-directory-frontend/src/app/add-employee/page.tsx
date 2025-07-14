@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { ADD_EMPLOYEE } from '../../graphql/mutations';
+import { GET_ALL_EMPLOYEES } from '../../graphql/queries';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -14,7 +15,10 @@ export default function AddEmployeePage() {
     salary: '',
   });
 
-  const [addEmployee, { loading, error }] = useMutation(ADD_EMPLOYEE);
+  const [addEmployee, { loading, error }] = useMutation(ADD_EMPLOYEE, {
+    refetchQueries: [{ query: GET_ALL_EMPLOYEES }],
+  });
+
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
