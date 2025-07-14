@@ -5,20 +5,29 @@ import { GET_ALL_EMPLOYEES } from '../graphql/queries';
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
 
+// ✅ Define the Employee type
+type Employee = {
+  id: string;
+  name: string;
+  position: string;
+  department: string;
+};
+
 export default function HomePage() {
   const { loading, error, data } = useQuery(GET_ALL_EMPLOYEES);
   const [departmentFilter, setDepartmentFilter] = useState('');
 
-  const employees = data?.getAllEmployees || [];
+  // ✅ Provide proper type fallback
+  const employees: Employee[] = data?.getAllEmployees || [];
 
   const uniqueDepartments = useMemo(() => {
-    const departments = employees.map((emp: any) => emp.department);
+    const departments = employees.map((emp) => emp.department);
     return [...new Set(departments)];
   }, [employees]);
 
   const filteredEmployees = useMemo(() => {
     if (!departmentFilter) return employees;
-    return employees.filter((emp: any) => emp.department === departmentFilter);
+    return employees.filter((emp) => emp.department === departmentFilter);
   }, [employees, departmentFilter]);
 
   if (loading) return <p className="p-4">Loading...</p>;
@@ -43,7 +52,7 @@ export default function HomePage() {
           onChange={(e) => setDepartmentFilter(e.target.value)}
         >
           <option value="">All</option>
-          {(uniqueDepartments as string[]).map((dept) => (
+          {uniqueDepartments.map((dept) => (
             <option key={dept} value={dept}>
               {dept}
             </option>
@@ -60,7 +69,7 @@ export default function HomePage() {
           </tr>
         </thead>
         <tbody>
-          {filteredEmployees.map((emp: any) => (
+          {filteredEmployees.map((emp) => (
             <tr key={emp.id} className="border-t hover:bg-gray-50">
               <td className="p-3">
                 <Link
