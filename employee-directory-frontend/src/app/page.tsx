@@ -1,11 +1,31 @@
 'use client';
 
-import { useQuery } from '@apollo/client';
-import { GET_ALL_EMPLOYEES } from '../graphql/queries';
+import { useQuery, gql } from '@apollo/client';
 import Link from 'next/link';
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
-// ✅ Define the Employee type
+const GET_ALL_EMPLOYEES = gql`
+  query {
+    getAllEmployees {
+      id
+      name
+      position
+      department
+    }
+  }
+`;
+
+const GET_EMPLOYEES_BY_DEPARTMENT = gql`
+  query GetEmployeesByDepartment($department: String!) {
+    getEmployeesByDepartment(department: $department) {
+      id
+      name
+      position
+      department
+    }
+  }
+`;
+
 type Employee = {
   id: string;
   name: string;
@@ -14,21 +34,37 @@ type Employee = {
 };
 
 export default function HomePage() {
-  const { loading, error, data } = useQuery(GET_ALL_EMPLOYEES);
   const [departmentFilter, setDepartmentFilter] = useState('');
+  const [queryToUse, setQueryToUse] = useState(GET_ALL_EMPLOYEES);
+  const [variables, setVariables] = useState({});
 
-  // ✅ Provide proper type fallback
-  const employees: Employee[] = data?.getAllEmployees || [];
+  const { data, loading, error, refetch } = useQuery(queryToUse, {
+    variables,
+  });
 
-  const uniqueDepartments = useMemo(() => {
-    const departments = employees.map((emp) => emp.department);
-    return [...new Set(departments)];
-  }, [employees]);
+  useEffect(() => {
+    if (departmentFilter) {
+      setQueryToUse(GET_EMPLOYEES_BY_DEPARTMENT);
+      setVariables({ department: departmentFilter });
+    } else {
+      setQueryToUse(GET_ALL_EMPLOYEES);
+      setVariables({});
+    }
+  }, [departmentFilter]);
 
-  const filteredEmployees = useMemo(() => {
-    if (!departmentFilter) return employees;
-    return employees.filter((emp) => emp.department === departmentFilter);
-  }, [employees, departmentFilter]);
+  const employees: Employee[] =
+    departmentFilter && data?.getEmployeesByDepartment
+      ? data.getEmployeesByDepartment
+      : data?.getAllEmployees || [];
+
+  const departments = ['Engineering', 'Sales', 'HR'];
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setDepartmentFilter(e.target.value);
+    refetch(
+      e.target.value ? { department: e.target.value } : {}
+    );
+  };
 
   if (loading) return <p className="p-4">Loading...</p>;
   if (error) return <p className="p-4 text-red-500">Error loading employees.</p>;
@@ -49,10 +85,10 @@ export default function HomePage() {
         <select
           className="border px-2 py-1 rounded"
           value={departmentFilter}
-          onChange={(e) => setDepartmentFilter(e.target.value)}
+          onChange={handleFilterChange}
         >
           <option value="">All</option>
-          {uniqueDepartments.map((dept) => (
+          {departments.map((dept) => (
             <option key={dept} value={dept}>
               {dept}
             </option>
@@ -69,7 +105,7 @@ export default function HomePage() {
           </tr>
         </thead>
         <tbody>
-          {filteredEmployees.map((emp) => (
+          {employees.map((emp) => (
             <tr key={emp.id} className="border-t hover:bg-gray-50">
               <td className="p-3">
                 <Link
